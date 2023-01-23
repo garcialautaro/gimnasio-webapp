@@ -3,7 +3,8 @@ const { db } = require('../database/config');
 
 const Alumno = db.define('Alumno', {
     AptoFisicoHasta: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        default: DataTypes.NOW()
     },
     PersonaId: {
         type: DataTypes.INTEGER
@@ -11,8 +12,6 @@ const Alumno = db.define('Alumno', {
     UsuarioId: {
         type: DataTypes.INTEGER
     },
-},{plural: 'Alumno'});
+});
 
-module.exports = {
-    Alumno
-}
+module.exports = Alumno;

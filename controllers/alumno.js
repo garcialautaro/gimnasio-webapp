@@ -1,5 +1,6 @@
 const { request, response } = require('express');
-const { Alumno } = require('../models/alumno');
+const { DataTypes } = require('sequelize');
+const { Alumno } = require('../models');
 
 
 const getAlumnos = async( req = request, res = response ) => {
@@ -30,9 +31,12 @@ const postAlumno = async( req = request, res = response ) => {
 
     const { body } = req;
 
+
     try {
 
         const alumno = new Alumno(body);
+
+        console.log(alumno);
         await alumno.save();
 
         res.json( alumno );
@@ -90,7 +94,7 @@ const deleteAlumno = async( req = request, res = response ) => {
         });
     }
 
-    await alumno.update({ estado: false });
+    await alumno.destroy();
 
     // await usuario.destroy();
 

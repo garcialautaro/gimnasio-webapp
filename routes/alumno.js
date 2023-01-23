@@ -1,17 +1,24 @@
 const { Router } = require('express');
 
-const { getAlumnos, 
-        getAlumno, 
-        postAlumno, 
-        putAlumno, 
-        deleteAlumno } = require('../controllers/alumno');
+const { ...alumno } = require('../controllers/');
+
+const { validarJWT } = require('../middlewares');
 
 const router = Router();
 
-router.get('/',       getAlumnos );
-router.get('/:id',    getAlumno );
-router.post('/',      postAlumno );
-router.put('/:id',    putAlumno );
-router.delete('/:id', deleteAlumno );
+router.get('/', [] , alumno.getAlumnos );
+
+router.get('/:id', alumno.getAlumno );
+router.post('/', [ 
+    validarJWT,
+] , alumno.postAlumno );
+
+router.put('/:id', [
+    validarJWT,
+] ,  alumno.putAlumno );
+
+router.delete('/:id', [
+    validarJWT,
+] ,  alumno.deleteAlumno );
 
 module.exports = router;

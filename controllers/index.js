@@ -1,5 +1,13 @@
-const Alumno = require('./alumno');
+const alumno = require('./alumno');
+const auth = require('./auth');
+const persona = require('./persona');
+const profesor = require('./profesor');
+const usuario = require('./usuario');
 
 module.exports = {
-    Alumno,
+    ...alumno,
+    ...auth,
+    ...persona,
+    ...profesor,
+    ...usuario,
 }

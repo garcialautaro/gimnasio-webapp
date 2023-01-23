@@ -1,14 +1,14 @@
 const { Sequelize } = require('sequelize');
 
 const db = new Sequelize(   process.env.MSSQL_DATABASE_NAME,
-                                process.env.MSSQL_USER_NAME,
-                                process.env.MSSQL_USER_PASSWORD, {
-        host: 'localhost',
-        dialect: 'mssql',
-        define: { 
-            freezeTableName: true, 
-            timestamps: false
-        },
+                            process.env.MSSQL_USER_NAME,
+                            process.env.MSSQL_USER_PASSWORD, {
+    host: 'localhost',
+    dialect: 'mssql',
+    define: { 
+        freezeTableName: true, 
+        timestamps: false
+    },
         
 })
 

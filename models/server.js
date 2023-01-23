@@ -11,6 +11,10 @@ class Server {
 
         this.paths = {
             alumno: '/api/alumno',
+            profesor: '/api/profesor',
+            usuario: '/api/usuario',
+            persona: '/api/persona',
+            auth: '/api/auth',
         }
 
         //Conectar con DB
@@ -42,6 +46,10 @@ class Server {
 
     routes() {
         this.app.use(this.paths.alumno, require('../routes/alumno'))
+        this.app.use(this.paths.auth, require('../routes/auth'))
+        this.app.use(this.paths.persona, require('../routes/persona'))
+        this.app.use(this.paths.profesor, require('../routes/profesor'))
+        this.app.use(this.paths.usuario, require('../routes/usuario'))
     }
 
     listen() {
