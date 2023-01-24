@@ -12,6 +12,9 @@ const Alumno = db.define('Alumno', {
     UsuarioId: {
         type: DataTypes.INTEGER
     },
+    Estado: {
+        type: DataTypes.BOOLEAN
+    }
 });
 
 module.exports = Alumno;

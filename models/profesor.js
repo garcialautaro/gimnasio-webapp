@@ -17,6 +17,8 @@ const Profesor = db.define('Profesor', {
     UsuarioId:{
         type: DataTypes.INTEGER
     },
+    Estado: {
+        type: DataTypes.BOOLEAN
+    }
 });
-
 module.exports = Profesor;

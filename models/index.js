@@ -3,7 +3,7 @@ const   Server = require('./server'),
         Profesor = require('./profesor'),
         Persona = require('./persona'),
         Usuario = require('./usuario');
-
+        UsuarioEstado = require('./usuario-estado');
 
 module.exports = {
     Server,
@@ -11,5 +11,5 @@ module.exports = {
     Profesor,
     Persona,
     Usuario,
-    
+    UsuarioEstado,
 }

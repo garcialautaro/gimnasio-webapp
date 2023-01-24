@@ -12,7 +12,6 @@ const db = new Sequelize(   process.env.MSSQL_DATABASE_NAME,
         
 })
 
-
 const dbConnection = async(db) => { 
     try {
         await db.authenticate();
@@ -20,9 +19,9 @@ const dbConnection = async(db) => {
 
     } catch (error) {
         console.log(error);
-        throw new Error('Error a la hora de iniciar la coneccion con la base de datos')
-    }
-} 
+        throw new Error('Error a la hora de iniciar la coneccion con la base de datos');
+    };
+};
 
 module.exports = {
     dbConnection,
