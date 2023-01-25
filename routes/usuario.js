@@ -23,6 +23,18 @@ router.put('/:id', [
     validarCampos,
 ] ,usuario.putUsuario );
 
+router.put('/cambiar-contrasenia/:id', [
+    validarJWT,
+    check('id', "No es un id válido").isNumeric(),
+    validarCampos,
+] ,usuario.cambiarContrasenia );
+
+router.put('/reestablecer-contrasenia/:id', [
+    validarJWT,
+    check('id', "No es un id válido").isNumeric(),
+    validarCampos,
+] ,usuario.reestablecerContrasenia );
+
 router.delete('/:id', [
     validarJWT,
     check('id', "No es un id válido").isNumeric(),

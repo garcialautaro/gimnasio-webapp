@@ -45,7 +45,7 @@ const getAlumno = async( req = request, res = response ) => {
 
 const postAlumno = async( req = request, res = response ) => {
 
-    const { Estado, ...body } = req;
+    const { Estado, ...body } = req.body;
 
     try {
 

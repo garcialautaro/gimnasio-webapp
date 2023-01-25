@@ -42,7 +42,7 @@ const getProfesor = async( req = request, res = response ) => {
 
 const postProfesor = async( req = request, res = response ) => {
 
-    const { Estado, ...body } = req;
+    const { Estado, ...body } = req.body;
 
     try {
 
@@ -69,7 +69,8 @@ const postProfesor = async( req = request, res = response ) => {
 const putProfesor = async( req = request, res = response ) => {
 
     const { id }   = req.params;
-    const { Estado, ...body } = req;
+
+    const { Estado, Id, ...body } = req.body;
 
     try {
         

@@ -23,11 +23,12 @@ const login = async(req, res = response) => {
         }
 
         //verificar que el usuario este activo
-        // if (!usuario.estado) {
-        //     return res.status(400).json({
-        //         msg: 'Usuario inhabilitado',
-        //     })
-        // }
+        if (usuario.UsuarioEstadoId !== 1) {
+            return res.status(400).json({
+                msg: 'Usuario inhabilitado',
+            })
+        }
+        
         //verificar la contraseña
         const validPassword = await bcryptjs.compareSync(Contrasenia, usuario.Contrasenia);
         console.log(validPassword);
@@ -39,6 +40,7 @@ const login = async(req, res = response) => {
         //generar el JWT
         console.log(usuario.id);
         const token = await generarJWT(usuario.id);
+        usuario.Contrasenia = "Contraseña encriptada";
 
         res.json({
             usuario,

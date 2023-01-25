@@ -4,7 +4,8 @@ const { db } = require('../database/config');
 const Usuario = db.define('Usuario', 
     {
         Nombre: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            unique: true
         },
         Alias: {
             type: DataTypes.STRING
