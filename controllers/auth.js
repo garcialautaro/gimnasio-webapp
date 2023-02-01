@@ -8,8 +8,8 @@ const login = async(req, res = response) => {
     const {Contrasenia, Nombre} = req.body;
     
     try {
-        //verificar si el email existe
 
+        //verificar si el nombre de usuario existe
         const usuario = await Usuario.findOne( {
             where: {
                 Nombre,
@@ -37,6 +37,7 @@ const login = async(req, res = response) => {
                 msg: 'Nombre de usuario / Contraseña incorrecto',
             })
         }
+
         //generar el JWT
         console.log(usuario.id);
         const token = await generarJWT(usuario.id);
@@ -52,8 +53,6 @@ const login = async(req, res = response) => {
             msg: 'Algo salio mal',
         })
     }
-
-
 }
 
 module.exports = {
