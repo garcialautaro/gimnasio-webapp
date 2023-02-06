@@ -1,59 +1,91 @@
 const { QueryTypes } = require("sequelize");
-const { alumnoExiste } = require("../helpers/db-validators");
-const { Alumno } = require("../models")
+const { Alumno } = require("../models");
 
 
-const obtenerTodos = async() =>{
-    const alumnos = await Alumno.sequelize.query(
-        `SELECT A.Id, A.AptoFisicoHasta, A.Estado, P.Nombre,
-        P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
-        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id 
-        WHERE A.Estado = 1`, 
+const obtenerTodos = async(query) =>{
+    const {Activo, AptoFisicoHasta, PersonaId, UsuarioId, Id} = query
+    let alumnos = null;
+    Activo? 
+    
+    alumnos = await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre, P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
+        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id WHERE A.Activo = :activo`, 
         {
-            type: QueryTypes.SELECT 
+            type: QueryTypes.SELECT,
+            replacements: { activo: Activo }
+        })
+    : AptoFisicoHasta ? 
+    alumnos = await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre, P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
+        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id WHERE A.AptoFisicoHasta = :aptoFisicoHasta`, 
+        {
+            type: QueryTypes.SELECT,
+            replacements: { aptoFisicoHasta: AptoFisicoHasta }
+        })
+    : PersonaId ? 
+    alumnos = await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre, P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
+        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id WHERE A.PersonaId = :personaId`, 
+        {
+            type: QueryTypes.SELECT,
+            replacements: { personaId: PersonaId }
+        })
+    : UsuarioId ? 
+    alumnos = await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre, P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
+        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id WHERE A.UsuarioId = :usuarioId`, 
+        {
+            type: QueryTypes.SELECT,
+            replacements: { usuarioId: UsuarioId }
+        })
+    : Id? 
+    alumnos = await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre, P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
+        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id WHERE A.Id = :id`, 
+        {
+            type: QueryTypes.SELECT,
+            replacements: { id: Id }
+        })
+    : alumnos = await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre, P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
+        From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id`, 
+        {
+            type: QueryTypes.SELECT
         })
     return alumnos;
 }
 
 const obtenerPorId = async(id) => {
 
-    const alumno = await Alumno.sequelize.query(
-        `SELECT A.Id, A.AptoFisicoHasta, A.Estado, P.Nombre,
+    return await Alumno.sequelize.query(
+        `SELECT A.Id, A.AptoFisicoHasta, A.Activo, P.Nombre,
         P.Apellido, P.FechaNac, P.DNI, P.Sexo, P.Observacion, P.Foto 
         From Alumno A INNER JOIN Persona P ON A.PersonaId = P.Id 
         WHERE A.Id = ${id}`, 
         {
             type: QueryTypes.SELECT
         })
-    return alumno;
 }
 
 const crear = async(body) => {
     const alumno = new Alumno(body);
-    alumno.Estado = true;
-    console.log(alumno);
+    alumno.Activo = true;
+
     await alumno.save();
 
     return alumno;
 }
 
-const actualizar = async (id, body) => {
-    const alumno = await Alumno.findByPk( id );
-    console.log(body.body);
-    
-    await alumno.update( body );
+const actualizar = async (alumnoDB, body) => {
 
-    return alumno;
+    await alumnoDB.update( body );
+
+    return alumnoDB;
 }
 
-const borrar = async(id) => {
-    const alumno = await Alumno.findByPk( id );
-    if ( !alumno ) {
-        return res.status(404).json({
-            msg: 'No existe un alumno con el id ' + id
-        });
-    }
-    alumno.Estado = false;
+const borrar = async(alumno) => {
+    
+    alumno.Activo = false;
     alumno.save();
 
     //await alumno.destroy();

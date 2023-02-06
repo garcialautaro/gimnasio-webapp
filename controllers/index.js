@@ -3,6 +3,7 @@ const auth = require('./auth');
 const persona = require('./persona');
 const profesor = require('./profesor');
 const usuario = require('./usuario');
+const alumnoPlan = require('./alumnoPlan');
 
 module.exports = {
     ...alumno,
@@ -10,4 +11,5 @@ module.exports = {
     ...persona,
     ...profesor,
     ...usuario,
+    ...alumnoPlan,
 }

@@ -7,27 +7,18 @@ const { validarJWT, validarCampos } = require('../middlewares');
 
 const router = Router();
 
-router.get('/', [] , alumno.getAlumnos );
+router.get('/', alumno.getAlumnos );
 
-router.get('/:id', [
-    check('id', "No es un id válido").isNumeric(),
-    validarCampos,
-] ,alumno.getAlumno );
+router.get('/:id', alumno.getAlumno );
 
-router.post('/', [ 
-    validarJWT,
-] , alumno.postAlumno );
+router.post('/', alumno.postAlumno );
 
-router.put('/:id', [
-    validarJWT,
-    check('id', "No es un id válido").isNumeric(),
-    validarCampos,
-] ,  alumno.putAlumno );
+router.put('/:id', alumno.putAlumno );
 
-router.delete('/:id', [
-    validarJWT,
-    check('id', "No es un id válido").isNumeric(),
-    validarCampos,
-] ,  alumno.deleteAlumno );
+router.put('/', alumno.requiereId);
+
+router.delete('/:id', alumno.deleteAlumno );
+
+router.delete('/', alumno.requiereId );
 
 module.exports = router;

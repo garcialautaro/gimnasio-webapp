@@ -1,32 +1,20 @@
 const { Router } = require('express');
-const { check } = require('express-validator');
-
 const { ...persona } = require('../controllers/');
-const { validarCampos, validarJWT } = require('../middlewares');
 
 const router = Router();
 
 router.get('/', persona.getPersonas );
 
-router.get('/:id', [
-    check('id', "No es un id válido").isNumeric(),
-    validarCampos,
-], persona.getPersona );
+router.get('/:id', persona.getPersona );
 
-router.post('/', [
-    validarJWT,
-], persona.postPersona );
+router.post('/', persona.postPersona );
 
-router.put('/:id', [
-    validarJWT,
-    check('id', "No es un id válido").isNumeric(),
-    validarCampos,
-] ,persona.putPersona );
+router.put('/:id', persona.putPersona );
 
-router.delete('/:id', [
-    validarJWT,
-    check('id', "No es un id válido").isNumeric(),
-    validarCampos,
-] , persona.deletePersona );
+router.put('/', persona.requiereId );
+
+router.delete('/:id', persona.deletePersona );
+
+router.delete('/', persona.requiereId );
 
 module.exports = router;

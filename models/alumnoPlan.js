@@ -1,20 +1,20 @@
 const { DataTypes } = require('sequelize');
 const { db } = require('../database/config');
 
-const Alumno = db.define('Alumno', {
-    AptoFisicoHasta: {
+const AlumnoPlan = db.define('AlumnoPlan', {
+    Fecha: {
         type: DataTypes.DATE,
         default: DataTypes.NOW()
     },
-    PersonaId: {
-        type: DataTypes.INTEGER
-    },
-    UsuarioId: {
-        type: DataTypes.INTEGER
-    },
     Activo: {
         type: DataTypes.BOOLEAN
+    },
+    AlumnoId: {
+        type: DataTypes.INTEGER
+    },
+    PlanId: {
+        type: DataTypes.INTEGER
     }
 });
 
-module.exports = Alumno;
+module.exports = AlumnoPlan;
