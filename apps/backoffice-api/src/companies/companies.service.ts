@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Company } from '../entities';
-import { CreateCompanyDto, UpdateCompanyDto } from '@turnos/shared';
+import { Company, CreateCompanyDto, UpdateCompanyDto } from '@turnos/shared';
 
 @Injectable()
 export class CompaniesService {
