@@ -1,6 +1,6 @@
 # Sistema de Gestión de Turnos - Monorepo
 
-Sistema completo de gestión de turnos y reservas con arquitectura de monorepo, utilizando Next.js para los frontends y NestJS para los backends, con Firebase como base de datos.
+Sistema completo de gestión de turnos y reservas con arquitectura de monorepo, utilizando Next.js para los frontends y NestJS con TypeORM para los backends, con MySQL como base de datos.
 
 ## 🏗️ Arquitectura del Proyecto
 
@@ -16,7 +16,6 @@ Este monorepo contiene:
 ### Packages
 
 - **shared**: Tipos, interfaces y enums compartidos entre todas las apps
-- **firebase-config**: Configuración centralizada de Firebase Admin SDK
 
 ## 🚀 Características Principales
 
@@ -52,7 +51,7 @@ Este monorepo contiene:
 
 - Node.js >= 18.0.0
 - pnpm >= 8.0.0
-- Cuenta de Firebase con proyecto configurado
+- MySQL >= 8.0
 
 ## 🛠️ Instalación
 
@@ -71,22 +70,20 @@ pnpm install
 
 3. Configurar variables de entorno:
 
-Copiar `.env.example` a `.env` y completar con tus credenciales de Firebase:
+Copiar `.env.example` a `.env` y completar con tus credenciales de MySQL:
 
 ```bash
 cp .env.example .env
 ```
 
 Variables requeridas:
-- `FIREBASE_PROJECT_ID`
-- `FIREBASE_CLIENT_EMAIL`
-- `FIREBASE_PRIVATE_KEY`
-- `FIREBASE_API_KEY`
-- `FIREBASE_AUTH_DOMAIN`
-- `FIREBASE_STORAGE_BUCKET`
-- `FIREBASE_MESSAGING_SENDER_ID`
-- `FIREBASE_APP_ID`
-- `JWT_SECRET`
+- `DB_HOST` - Host de MySQL (ej: localhost)
+- `DB_PORT` - Puerto de MySQL (ej: 3306)
+- `DB_USERNAME` - Usuario de MySQL
+- `DB_PASSWORD` - Contraseña de MySQL
+- `DB_DATABASE` - Nombre de la base de datos (ej: turnos)
+- `JWT_SECRET` - Clave secreta para JWT
+- `NODE_ENV` - Entorno (development/production)
 
 ## 🏃 Desarrollo
 
