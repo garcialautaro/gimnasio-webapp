@@ -6,7 +6,7 @@ import { EventsModule } from './events/events.module';
 import { DayTimesModule } from './day-times/day-times.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { AuthModule } from './auth/auth.module';
-import { Company, User, Event, DayTime, Booking } from './entities';
+import { Company, User, Event, DayTime, Booking } from '@turnos/shared';
 
 @Module({
   imports: [
