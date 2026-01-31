@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, forwardRef, Inject } from '@nestjs/common';
-import { getFirestore } from '@turnos/firebase-config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import {
   DayTime,
   CreateDayTimeDto,
@@ -13,87 +14,54 @@ import { BookingsService } from '../bookings/bookings.service';
 
 @Injectable()
 export class DayTimesService {
-  private readonly collection = 'day-times';
-
   constructor(
+    @InjectRepository(DayTime)
+    private readonly dayTimeRepository: Repository<DayTime>,
     @Inject(forwardRef(() => BookingsService))
     private readonly bookingsService: BookingsService,
   ) {}
 
   async create(createDayTimeDto: CreateDayTimeDto): Promise<DayTime> {
-    const db = getFirestore();
-    const docRef = db.collection(this.collection).doc();
-
-    const dayTime: DayTime = {
-      id: docRef.id,
-      eventId: createDayTimeDto.eventId,
-      type: createDayTimeDto.type,
-      dayOfWeek: createDayTimeDto.dayOfWeek,
+    const dayTime = this.dayTimeRepository.create({
+      ...createDayTimeDto,
       specificDate: createDayTimeDto.specificDate
         ? new Date(createDayTimeDto.specificDate)
         : undefined,
-      startTime: createDayTimeDto.startTime,
-      endTime: createDayTimeDto.endTime,
-      quota: createDayTimeDto.quota,
       disablesRegular: createDayTimeDto.disablesRegular || false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isActive: true,
-    };
+    });
 
-    await docRef.set(dayTime);
-    return dayTime;
+    return this.dayTimeRepository.save(dayTime);
   }
 
   async findAll(): Promise<DayTime[]> {
-    const db = getFirestore();
-    const snapshot = await db.collection(this.collection).get();
-    return snapshot.docs.map((doc) => doc.data() as DayTime);
+    return this.dayTimeRepository.find();
   }
 
   async findByEvent(eventId: string): Promise<DayTime[]> {
-    const db = getFirestore();
-    const snapshot = await db
-      .collection(this.collection)
-      .where('eventId', '==', eventId)
-      .get();
-
-    return snapshot.docs.map((doc) => doc.data() as DayTime);
+    return this.dayTimeRepository.find({ where: { eventId } });
   }
 
   async findOne(id: string): Promise<DayTime> {
-    const db = getFirestore();
-    const doc = await db.collection(this.collection).doc(id).get();
+    const dayTime = await this.dayTimeRepository.findOne({ where: { id } });
 
-    if (!doc.exists) {
+    if (!dayTime) {
       throw new NotFoundException(`DayTime with ID ${id} not found`);
     }
 
-    return doc.data() as DayTime;
+    return dayTime;
   }
 
   async update(id: string, updateDayTimeDto: UpdateDayTimeDto): Promise<DayTime> {
-    const db = getFirestore();
-    const docRef = db.collection(this.collection).doc(id);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      throw new NotFoundException(`DayTime with ID ${id} not found`);
-    }
-
-    const updatedDayTime = {
-      ...doc.data(),
-      ...updateDayTimeDto,
-      updatedAt: new Date(),
-    };
-
-    await docRef.update(updatedDayTime);
-    return updatedDayTime as DayTime;
+    const dayTime = await this.findOne(id);
+    Object.assign(dayTime, updateDayTimeDto);
+    return this.dayTimeRepository.save(dayTime);
   }
 
   async delete(id: string): Promise<void> {
-    const db = getFirestore();
-    await db.collection(this.collection).doc(id).delete();
+    const result = await this.dayTimeRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`DayTime with ID ${id} not found`);
+    }
   }
 
   // Obtener day-times disponibles en un rango de fechas

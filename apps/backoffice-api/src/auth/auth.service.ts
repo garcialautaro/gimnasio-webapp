@@ -1,8 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { getAuth } from '@turnos/firebase-config';
 import { UsersService } from '../users/users.service';
-import { AuthUserDto, AuthResponse, CreateUserDto } from '@turnos/shared';
+import { AuthUserDto, AuthResponse, CreateUserDto, User } from '@turnos/shared';
 
 @Injectable()
 export class AuthService {
@@ -12,18 +11,8 @@ export class AuthService {
   ) {}
 
   async register(createUserDto: CreateUserDto): Promise<AuthResponse> {
-    // Crear usuario en Firebase Auth
-    const firebaseAuth = getAuth();
-    const firebaseUser = await firebaseAuth.createUser({
-      email: createUserDto.email,
-      password: createUserDto.password,
-    });
-
-    // Crear usuario en Firestore
-    const user = await this.usersService.create({
-      ...createUserDto,
-      firebaseUid: firebaseUser.uid,
-    });
+    // Crear usuario (password se hashea automáticamente en la entity)
+    const user = await this.usersService.create(createUserDto);
 
     // Generar token JWT
     const token = this.jwtService.sign({
@@ -37,27 +26,33 @@ export class AuthService {
   }
 
   async login(authUserDto: AuthUserDto): Promise<AuthResponse> {
-    try {
-      // Aquí normalmente usarías el Firebase Client SDK para autenticar
-      // Por ahora, buscaremos al usuario por email y generaremos un token
-      const user = await this.usersService.findByEmail(authUserDto.email);
+    // Buscar usuario por email (incluye password)
+    const user = await this.usersService.findByEmail(authUserDto.email);
 
-      if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      // Generar token JWT
-      const token = this.jwtService.sign({
-        sub: user.id,
-        email: user.email,
-        role: user.role,
-        companyId: user.companyId,
-      });
-
-      return { user, token };
-    } catch (error) {
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    // Validar password con bcrypt
+    const userEntity = user as unknown as User & { validatePassword: (password: string) => Promise<boolean> };
+    const isPasswordValid = await userEntity.validatePassword(authUserDto.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Generar token JWT
+    const token = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      companyId: user.companyId,
+    });
+
+    // Remover password del objeto user antes de retornar
+    const { password, ...userWithoutPassword } = user as any;
+
+    return { user: userWithoutPassword as User, token };
   }
 
   async validateUser(userId: string) {
