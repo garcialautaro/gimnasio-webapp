@@ -11,8 +11,6 @@ export interface User {
   // Si es COMPANY_ADMIN o COMPANY_STAFF
   companyId?: string;
 
-  // Firebase UID
-  firebaseUid: string;
 
   // Metadata
   createdAt: Date;
