@@ -1,30 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { getAuth, getFirestore } from '@turnos/firebase-config';
-import { User, CreateUserDto, UserRole } from '@turnos/shared';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User, UserRole } from '@turnos/shared';
 
 @Injectable()
 export class AuthService {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
   async registerClient(email: string, password: string, firstName: string, lastName: string, phone?: string): Promise<User> {
-    const firebaseAuth = getAuth();
-    const firebaseUser = await firebaseAuth.createUser({ email, password });
-
-    const db = getFirestore();
-    const docRef = db.collection('users').doc();
-
-    const user: User = {
-      id: docRef.id,
+    const user = this.userRepository.create({
       email,
+      password, // Se hasheará automáticamente en la entity
       firstName,
       lastName,
       phone,
       role: UserRole.CLIENT,
-      firebaseUid: firebaseUser.uid,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isActive: true,
-    };
+    });
 
-    await docRef.set(user);
-    return user;
+    return this.userRepository.save(user);
   }
 }
